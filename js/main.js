@@ -1,7 +1,7 @@
 const app = Vue.createApp({
     data() {
         return {
-            intro: 'Placeholder',
+            intro: 'Welcome to my Vue template',
         }
     },
     methods: {
