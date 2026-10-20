@@ -16,6 +16,21 @@
         <div class="nav-bar"></div>
 
         <h1>{{ intro }}</h1>
+        <!-- Example uses of vue -->
+        <h1>numbers</h1>
+        <div v-for="i in list" :key="i" v-show="shownumbers">
+            <h1 v-if="i<3" class="low">{{i}}</h1>
+        </div>
+
+        <input v-model="nr" placeholder="enter number">
+        <br>
+        <button @click="add">Add number</button>
+
+        <button @click="hidelist">
+            {{shownumbers ? "Hide" : "Show"}} list
+        </button>
+
+
     </div>
 
     <!-- Import App -->
