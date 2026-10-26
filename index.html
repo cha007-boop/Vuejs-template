@@ -5,32 +5,18 @@
     <meta charset="UTF-8" />
     <title>Vue Template</title>
     <!-- Import Styles -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/styles.css" />
     <!-- Import Vue.js -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Import axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.20.0/dist/axios.min.js"></script>
 </head>
 
 <body>
     <div id="app">
-        <div class="nav-bar"></div>
-
         <h1>{{ intro }}</h1>
-        <!-- Example uses of vue -->
-        <h1>numbers</h1>
-        <div v-for="i in list" :key="i" v-show="shownumbers">
-            <h1 v-if="i<3" class="low">{{i}}</h1>
-            <h1 v-else>{{i}}</h1>
-        </div>
-
-        <input v-model="nr" placeholder="enter number">
-        <br>
-        <button @click="add">Add number</button>
-
-        <button @click="hidelist">
-            {{shownumbers ? "Hide" : "Show"}} list
-        </button>
-
 
     </div>
 
