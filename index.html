@@ -20,6 +20,39 @@
 
     </div>
 
+
+    <!-- Bootstrap modal for delete -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h2 class="modal-title fs-5" id="deleteModalLabel">Confirm deletion</h2>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"
+                        @click="deleteTarget = null"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">
+                        Are you sure you want to delete <strong>{{ deleteTarget?.name }}</strong>?
+                        This action cannot be undone.
+                    </p>
+                    <p v-if="deleteError" class="alert alert-danger mt-3 mb-0" role="alert">
+                        {{ deleteError }}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="deleteTarget = null"
+                        :disabled="deletingId !== null">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-danger" @click="deleteItem"
+                        :disabled="!deleteTarget || deletingId !== null">
+                        {{ deletingId !== null ? 'Deleting...' : 'Delete stock' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
     <!-- Import App -->
     <script src="./js/main.js"></script>
 
