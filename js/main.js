@@ -1,4 +1,8 @@
+const authURL = ''
 const baseURL = ''
+
+const tokenName = 'userInfo'
+
 const app = Vue.createApp({
     data() {
         return {
@@ -20,10 +24,75 @@ const app = Vue.createApp({
             isSubmitting: false,
             postMessage: '',
             postError: '',
-            errorMessage: ''
+            errorMessage: '',
+
+            auth: { username: '', password: '' },
+            userInfo: null,
+            authMessage: '',
+            isLoggingIn: false
+        }
+    },
+    mounted() {
+        this.getAll()
+    },
+    created() {
+        const userInfoStr = localStorage.getItem(tokenName);
+        if (userInfoStr != null) {
+            this.userInfo = JSON.parse(userInfoStr);
+            this.getAll(); // Fetch aktiehandels immediately if user is already logged in
         }
     },
     methods: {
+        parseJwt(token) {
+            const payload = token.split('.')[1];
+
+            // Convert Base64URL to regular Base64
+            const base64 = payload
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+
+            // Decode and convert to JSON
+            const decodedPayload = atob(base64);
+
+            return JSON.parse(decodedPayload);
+        },
+        login() {
+            this.isLoggingIn = true
+            this.authMessage = ''
+
+            axios
+                .post(authURL, this.auth)
+                .then(response => {
+                    if (!response.data?.token) {
+                        throw new Error('The login response did not include an authentication token.')
+                    }
+
+                    this.userInfo = {
+                        username: this.auth.username,
+                        role: this.parseJwt(response.data.token)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+                        token: response.data.token
+                    }
+                    localStorage.setItem(tokenName, JSON.stringify(this.userInfo))
+                    this.auth.password = ''
+                    bootstrap.Dropdown.getOrCreateInstance(document.getElementById('loginDropdown')).hide()
+                    this.getAll()
+                })
+                .catch((error) => {
+                    this.authMessage = this.getRequestErrorMessage(error)
+                })
+                .finally(() => {
+                    this.isLoggingIn = false
+                })
+
+        },
+        logout() {
+            localStorage.removeItem(tokenName)
+            this.userInfo = null
+            this.auth = { username: '', password: '' }
+            this.activeView = 'filter'
+            this.editingId = null
+            this.editAktie = null
+        },
         // Fetch items using the current filters and sort order.
         getAll() {
             const params = {}
@@ -76,7 +145,11 @@ const app = Vue.createApp({
             this.postMessage = ''
             this.postError = ''
             axios
-                .post(baseURL, this.newAktie)
+                .post(baseURL, this.newItem, {
+                    headers: {
+                        'Authorization': 'Bearer ' + this.userInfo.token
+                    }
+                })
                 .then((response) => {
                     console.log('Post method called')
                     this.list.push(response.data)
